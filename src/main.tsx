@@ -22,7 +22,7 @@ export default function App() {
 
       {/* Your page content */}
       <main className="relative z-10 p-8">
-        <h1 className="text-3xl font-bold mb-4">Hello — Tailwind Test</h1>
+        <h1 className="text-3xl font-bold mb-4"></h1>
         ...
       </main>
     </div>
