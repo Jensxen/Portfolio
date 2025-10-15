@@ -5,6 +5,14 @@ declare module './Dither' {
   export default Dither;
 }
 
+declare module '@/components/Dither' {
+  import React from 'react';
+  const Dither: React.ComponentType<any>;
+  export default Dither;
+}
+
+declare module '*';
+
 declare module '*.js' {
   import React from 'react';
   const Component: React.ComponentType<any>;

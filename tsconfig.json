@@ -5,7 +5,10 @@
     "paths": {
       "@/*": ["src/*"],
       "ui/*": ["src/components/ui/*"]
-    }
+    },
+  "jsx": "react-jsx",
+  "lib": ["ES2022", "DOM", "DOM.Iterable"]
   },
-  "files": []
+  "files": [],
+  "include": ["src"]
 }
