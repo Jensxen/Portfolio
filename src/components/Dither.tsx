@@ -1,6 +1,6 @@
 import { useRef, useEffect, forwardRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import type { ThreeEvent } from '@react-three/fiber';
+// (ThreeEvent import removed; using DOM PointerEvent for pointer handling)
 import { EffectComposer, wrapEffect } from '@react-three/postprocessing';
 import { Effect } from 'postprocessing';
 import * as THREE from 'three';
@@ -251,9 +251,10 @@ function DitheredWaves({
     }
   });
 
-  const handlePointerMove = (e: ThreeEvent<PointerEvent>) => {
+  const handlePointerMove = (e: PointerEvent) => {
     if (!enableMouseInteraction) return;
-    const rect = gl.domElement.getBoundingClientRect();
+    const canvas = gl.domElement as HTMLCanvasElement;
+    const rect = canvas.getBoundingClientRect();
     const dpr = gl.getPixelRatio();
     mouseRef.current.set((e.clientX - rect.left) * dpr, (e.clientY - rect.top) * dpr);
   };

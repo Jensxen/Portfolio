@@ -1,4 +1,5 @@
 {
+  "extends": "./tsconfig.app.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -6,9 +7,5 @@
       "ui/*": ["src/components/ui/*"]
     }
   },
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "files": []
 }
