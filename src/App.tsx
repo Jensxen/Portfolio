@@ -4,7 +4,7 @@ export default function App() {
   return (
     <div className="relative min-h-screen">
       {/* Full-viewport Dither background */}
-      <div className="fixed inset-0 -z-10">
+      <div className="fixed inset-0 z-0">
         <Dither
           waveColor={[0.5, 0.5, 0.5]}
           disableAnimation={false}
