@@ -9,9 +9,10 @@ export default function App() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   return (
+    /* Added bg-black to prevent white flash during loading */
     <div
       ref={scrollRef}
-      className="relative min-h-screen w-screen overflow-auto overflow-x-hidden"
+      className="relative min-h-screen w-screen overflow-auto overflow-x-hidden bg-black"
     >
       {/* Full-viewport Dither background */}
       <div className="fixed inset-0 z-0">
@@ -26,14 +27,13 @@ export default function App() {
           waveSpeed={0.05}
         />
       </div>
-
       {/* Your page content */}
       <main className="relative z-10 p-8">
         <h1 className="text-3xl font-bold mb-4"></h1>
 
-        {/* Added py-4 to give vertical padding for descenders like 'g' */}
+        {/* Positioned absolutely with pointer-events-none to allow Dither mouse interaction */}
         <section
-          className="mb-8 overflow-hidden w-screen -mx-8 pointer-events-none py-4"
+          className="absolute top-20 left-0 right-0 overflow-hidden w-screen z-5 pointer-events-none"
           style={{ maxWidth: "100vw" }}
         >
           <ScrollVelocity
