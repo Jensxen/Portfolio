@@ -1,12 +1,17 @@
 import Dither from "@/components/Dither";
 import ScrollVelocity from "./components/ScrollVelocity";
+import ASCIIText from "./components/ASCIIText";
 import { useRef } from "react";
 
 export default function App() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div ref={scrollRef} className="relative min-h-screen">
+    /* Added bg-black to prevent white flash during loading */
+    <div
+      ref={scrollRef}
+      className="relative min-h-screen w-screen overflow-auto overflow-x-hidden bg-black"
+    >
       {/* Full-viewport Dither background */}
       <div className="fixed inset-0 z-0">
         <Dither
@@ -24,20 +29,35 @@ export default function App() {
       {/* Your page content */}
       <main className="relative z-10 p-8">
         <h1 className="text-3xl font-bold mb-4"></h1>
-        {/* ScrollVelocity added here — it will react to scrolls of the outer container */}
-        <section className="mb-8">
+
+        {/* ASCII Text Component - centered and larger */}
+        <div className="fixed inset-0 flex items-center justify-center z-20">
+          <ASCIIText 
+            text="Welcome"
+            textFontSize={50}
+            asciiFontSize={12}
+            textColor="#ffffff"
+          />
+        </div>
+
+        {/* Positioned absolutely with pointer-events-none to allow Dither mouse interaction */}
+        <section
+          className="absolute top-20 left-0 right-0 overflow-hidden w-screen z-5 pointer-events-none"
+          style={{ maxWidth: "100vw" }}
+        >
           <ScrollVelocity
             scrollContainerRef={scrollRef as React.RefObject<HTMLElement>}
-            texts={["Design", "Code", "Animate", "Ship"]}
-            velocity={120}
-            numCopies={6}
-            damping={50}
-            stiffness={400}
-            parallaxClassName="w-full"
-            scrollerClassName="text-white/90"
+            texts={["Under Construction • ", "Work In Progress • "]}
+            velocity={60}
+            numCopies={8}
+            damping={80}
+            stiffness={200}
+            /* Removed width constraints from parallax to let it overflow within container */
+            parallaxClassName="overflow-hidden"
+            /* Added leading-relaxed for better line height to accommodate descenders */
+            scrollerClassName="text-white/90 text-4xl font-bold leading-relaxed"
           />
         </section>
-        ...
       </main>
     </div>
   );
