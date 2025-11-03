@@ -67,7 +67,7 @@ export default function App() {
               },
             ]}
             staggerDelay={0.3}
-            initialDelay={1}
+            initialDelay={0.7}
             moveDistance={60}
             size={40}
             gap="gap-8"
