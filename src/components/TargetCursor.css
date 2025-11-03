@@ -32,6 +32,11 @@
   will-change: transform;
 }
 
+/* Hide default cursor when hovering cursor-target elements */
+.cursor-target {
+  cursor: none !important;
+}
+
 .corner-tl {
   transform: translate(-150%, -150%);
   border-right: none;
