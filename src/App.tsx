@@ -28,10 +28,10 @@ export default function App() {
         aria-label="Home logo"
       >
         <img
-          src="/logo.svg"
+          src="/logo.png"
           alt="Logo"
-          className="w-full h-full"
-          style={{ filter: "invert(1) brightness(0.4)" }}
+          className="w-full h-full object-contain"
+          style={{ filter: " brightness(1)" }}
         />
       </a>
 
