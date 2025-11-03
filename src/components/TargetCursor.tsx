@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 import { gsap } from 'gsap';
+import { useIsMobile } from '@/lib/hooks';
 import './TargetCursor.css';
 
 export interface TargetCursorProps {
@@ -13,6 +14,8 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
   spinDuration = 2,
   hideDefaultCursor = true
 }) => {
+  const isMobile = useIsMobile();
+  const [isTouch, setIsTouch] = useState(false);
   const cursorRef = useRef<HTMLDivElement>(null);
   const cornersRef = useRef<NodeListOf<HTMLDivElement>>(null);
   const spinTl = useRef<gsap.core.Timeline>(null);
@@ -26,6 +29,20 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
     []
   );
 
+  // Detect if user is using touch input
+  useEffect(() => {
+    const handleTouchStart = () => setIsTouch(true);
+    const handleMouseMove = () => setIsTouch(false);
+
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
   const moveCursor = useCallback((x: number, y: number) => {
     if (!cursorRef.current) return;
     gsap.to(cursorRef.current, {
@@ -38,6 +55,12 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
 
   useEffect(() => {
     if (!cursorRef.current) return;
+
+    // Hide cursor on mobile/touch devices
+    if (isMobile || isTouch) {
+      document.body.style.cursor = 'auto';
+      return;
+    }
 
     const originalCursor = document.body.style.cursor;
     if (hideDefaultCursor) {
@@ -313,7 +336,7 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
       spinTl.current?.kill();
       document.body.style.cursor = originalCursor;
     };
-  }, [targetSelector, spinDuration, moveCursor, constants, hideDefaultCursor]);
+  }, [targetSelector, spinDuration, moveCursor, constants, hideDefaultCursor, isMobile, isTouch]);
 
   useEffect(() => {
     if (!cursorRef.current || !spinTl.current) return;

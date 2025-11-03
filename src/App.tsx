@@ -4,9 +4,11 @@ import TargetCursor from "@/components/TargetCursor";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { HiMail } from "react-icons/hi";
 import { useRef } from "react";
+import { useIsMobile } from "@/lib/hooks";
 
 export default function App() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const isMobile = useIsMobile();
 
   return (
     <div
@@ -41,13 +43,13 @@ export default function App() {
           speed={1}
           scanlineFrequency={5}
           warpAmount={0.3}
-          resolutionScale={1}
+          resolutionScale={isMobile ? 0.6 : 1}
         />
       </div>
 
       <main className="relative z-10 p-8">
         {/* Social Icons */}
-        <div className="fixed left-1/2 top-1/2 -translate-x-1/2 translate-y-1/2 z-10">
+        <div className={`fixed z-10 ${isMobile ? 'left-1/2 bottom-8 -translate-x-1/2' : 'left-1/2 top-1/2 -translate-x-1/2 translate-y-1/2'}`}>
           <FadingIconsGroup
             icons={[
               {
@@ -66,11 +68,11 @@ export default function App() {
                 ariaLabel: "Contact me",
               },
             ]}
-            staggerDelay={0.3}
-            initialDelay={0.7}
-            moveDistance={60}
-            size={40}
-            gap="gap-8"
+            staggerDelay={isMobile ? 0.15 : 0.3}
+            initialDelay={isMobile ? 0.3 : 0.7}
+            moveDistance={isMobile ? 30 : 60}
+            size={isMobile ? 28 : 40}
+            gap={isMobile ? "gap-6" : "gap-8"}
             iconClassName="cursor-target"
           />
         </div>
