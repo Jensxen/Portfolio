@@ -1,17 +1,38 @@
 import DarkVeil from "./components/DarkVeil";
-import ASCIIText from "./components/ASCIIText";
+import { FadingIconsGroup } from "@/components/FadingIcons";
+import TargetCursor from "@/components/TargetCursor";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { HiMail } from "react-icons/hi";
 import { useRef } from "react";
 
 export default function App() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    /* Added bg-black to prevent white flash during loading */
     <div
       ref={scrollRef}
       className="relative min-h-screen w-screen overflow-auto overflow-x-hidden bg-black"
     >
-      {/* Full-viewport DarkVeil background */}
+      <TargetCursor
+        targetSelector=".cursor-target"
+        spinDuration={2}
+        hideDefaultCursor={true}
+      />
+
+      {/* Logo in top-left */}
+      <a
+        href="/"
+        className="fixed top-4 left-4 z-20 w-[3.45rem] h-[3.45rem] cursor-target"
+        aria-label="Home logo"
+      >
+        <img
+          src="/logo.svg"
+          alt="Logo"
+          className="w-full h-full"
+          style={{ filter: "invert(1) brightness(0.4)" }}
+        />
+      </a>
+
       <div className="fixed inset-0 z-0">
         <DarkVeil
           hueShift={0}
@@ -24,26 +45,35 @@ export default function App() {
         />
       </div>
 
-      {/* Your page content */}
       <main className="relative z-10 p-8">
-        <h1 className="text-3xl font-bold mb-4"></h1>
-
-        {/* ASCII Text Component - centered and larger */}
-        <div className="fixed inset-0 flex items-center justify-center z-20">
-          <ASCIIText
-            text="Welcome"
-            textFontSize={50}
-            asciiFontSize={12}
-            textColor="#ffffff"
+        {/* Social Icons */}
+        <div className="fixed left-1/2 top-1/2 -translate-x-1/2 translate-y-1/2 z-10">
+          <FadingIconsGroup
+            icons={[
+              {
+                icon: FaGithub,
+                href: "https://github.com/Jensxen",
+                ariaLabel: "Jensxen Git",
+              },
+              {
+                icon: FaLinkedin,
+                href: "https://www.linkedin.com/in/marcus-a-jensen",
+                ariaLabel: "LinkedIn",
+              },
+              {
+                icon: HiMail,
+                href: "mailto:marcusjensen.privat@gmail.com",
+                ariaLabel: "Contact me",
+              },
+            ]}
+            staggerDelay={0.3}
+            initialDelay={1}
+            moveDistance={60}
+            size={40}
+            gap="gap-8"
+            iconClassName="cursor-target"
           />
         </div>
-
-        {/* Positioned absolutely with pointer-events-none to allow Dither mouse interaction */}
-        <section
-          className="absolute top-20 left-0 right-0 overflow-hidden w-screen z-5 pointer-events-none"
-          style={{ maxWidth: "100vw" }}
-        >
-        </section>
       </main>
     </div>
   );
