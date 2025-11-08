@@ -3,12 +3,43 @@ import { FadingIconsGroup } from "@/components/FadingIcons";
 import TargetCursor from "@/components/TargetCursor";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { HiMail } from "react-icons/hi";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useIsMobile } from "@/lib/hooks";
 
 export default function App() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const isMobile = useIsMobile();
+
+  const [allowed, setAllowed] = useState<boolean | null>(null);
+  useEffect(() => {
+    const p =
+      typeof window !== "undefined"
+        ? window.location.pathname.replace(/\/+$/, "")
+        : "";
+    setAllowed(p === "/personal");
+  }, []);
+
+  if (allowed === null) return null; // avoid flicker during mount
+
+  // Build social icons array — use real URLs only when on /personal,
+  // otherwise use placeholders that don't lead anywhere.
+  const socialIcons = [
+    {
+      icon: FaGithub,
+      href: allowed ? "https://github.com/Jensxen" : "#",
+      ariaLabel: allowed ? "Jensxen Git" : "GitHub (placeholder)",
+    },
+    {
+      icon: FaLinkedin,
+      href: allowed ? "https://www.linkedin.com/in/marcus-a-jensen" : "#",
+      ariaLabel: allowed ? "LinkedIn" : "LinkedIn (placeholder)",
+    },
+    {
+      icon: HiMail,
+      href: allowed ? "mailto:marcusjensen.privat@gmail.com" : "#",
+      ariaLabel: allowed ? "Contact me" : "Contact (placeholder)",
+    },
+  ];
 
   return (
     <div
@@ -31,10 +62,10 @@ export default function App() {
           xmlns="http://www.w3.org/2000/svg"
           role="img"
           aria-label="Logo"
-          style={{ 
+          style={{
             filter: "brightness(1)",
             width: "60px",
-            height: "60px"
+            height: "60px",
           }}
         >
           <polygon
@@ -74,23 +105,7 @@ export default function App() {
           }`}
         >
           <FadingIconsGroup
-            icons={[
-              {
-                icon: FaGithub,
-                href: "https://github.com/Jensxen",
-                ariaLabel: "Jensxen Git",
-              },
-              {
-                icon: FaLinkedin,
-                href: "https://www.linkedin.com/in/marcus-a-jensen",
-                ariaLabel: "LinkedIn",
-              },
-              {
-                icon: HiMail,
-                href: "mailto:marcusjensen.privat@gmail.com",
-                ariaLabel: "Contact me",
-              },
-            ]}
+            icons={socialIcons}
             staggerDelay={isMobile ? 0.15 : 0.3}
             initialDelay={isMobile ? 0.3 : 0.7}
             moveDistance={isMobile ? 30 : 60}
