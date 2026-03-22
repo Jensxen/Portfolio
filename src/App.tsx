@@ -6,7 +6,7 @@ import { HiMail } from "react-icons/hi";
 import { useEffect, useRef, useState } from "react";
 import { useIsMobile } from "@/lib/hooks";
 import { ChromaGrid } from '@/components/ChromaGrid';
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 
 
 export default function App() {
