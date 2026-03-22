@@ -5,6 +5,9 @@ import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { HiMail } from "react-icons/hi";
 import { useEffect, useRef, useState } from "react";
 import { useIsMobile } from "@/lib/hooks";
+import { ChromaGrid } from '@/components/ChromaGrid';
+import { Analytics } from "@vercel/analytics/next"
+
 
 export default function App() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -40,6 +43,16 @@ export default function App() {
       ariaLabel: allowed ? "Contact me" : "Contact (placeholder)",
     },
   ];
+
+  const portfolioItem = {
+    image: 'https://i.pravatar.cc/300?img=8',
+    title: 'Marcus Jensen',
+    subtitle: 'Full Stack Developer',
+    handle: '@jensxen',
+    borderColor: '#4F46E5',
+    gradient: 'linear-gradient(145deg, #4F46E5, #000)',
+    url: allowed ? 'https://github.com/Jensxen' : '#'
+  };
 
   return (
     <div
@@ -95,8 +108,20 @@ export default function App() {
           resolutionScale={isMobile ? 0.6 : 1}
         />
       </div>
-      <main className="relative z-10 p-8">
-        {/* Social Icons */}
+
+      <main className="relative z-10">
+        {/* ChromaGrid Portfolio Card - Right Side */}
+        <div className={`fixed right-8 top-1/2 -translate-y-1/2 z-10 ${isMobile ? 'right-4' : 'right-8'}`}>
+          <ChromaGrid 
+            items={[portfolioItem]}
+            columns={1}
+            rows={1}
+            className="cursor-target"
+            radius={isMobile ? 150 : 200}
+          />
+        </div>
+
+        {/* Social Icons - Back to Original Position */}
         <div
           className={`fixed z-10 ${
             isMobile
@@ -115,6 +140,9 @@ export default function App() {
           />
         </div>
       </main>
+
+      {/* Vercel Analytics component */}
+      <Analytics />
     </div>
   );
 }
