@@ -4,17 +4,37 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Added to prevent white flash on page load */
+/* ─── Base reset ────────────────────────────────────────────────────────────── */
 html, body {
   background-color: #000000 !important;
   color: white;
+
+  /* Safari requires explicit 100% height on both html AND body so that
+     children using height:100% inside fixed containers resolve correctly. */
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
+  /* Prevent iOS rubber-band overscroll from revealing a gap behind the canvas */
+  overscroll-behavior: none;
 }
 
 #root {
   background-color: #000000 !important;
+  /* Same height chain needed for Safari */
+  height: 100%;
 }
 
+/* ─── Safe area CSS variables ───────────────────────────────────────────────── */
+/* viewport-fit=cover is already set in index.html — these vars expose the
+   inset values so JS-free layout can respect the notch / home bar. */
 :root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -71,11 +91,8 @@ a:hover {
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
+  display: block;
   min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {

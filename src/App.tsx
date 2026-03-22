@@ -21,10 +21,8 @@ export default function App() {
     setAllowed(p === "/personal");
   }, []);
 
-  if (allowed === null) return null; // avoid flicker during mount
+  if (allowed === null) return null;
 
-  // Build social icons array — use real URLs only when on /personal,
-  // otherwise use placeholders that don't lead anywhere.
   const socialIcons = [
     {
       icon: FaGithub,
@@ -46,7 +44,16 @@ export default function App() {
   return (
     <div
       ref={scrollRef}
-      className="relative min-h-screen w-screen overflow-auto overflow-x-hidden bg-black"
+      className="relative w-screen overflow-auto overflow-x-hidden bg-black"
+      style={{
+        // Three-value fallback chain for max Safari compatibility:
+        // 1. 100vh  — universal baseline
+        // 2. -webkit-fill-available — iOS Safari 12-14 (pre-dvh)
+        // 3. 100dvh — modern: excludes collapsible browser chrome
+        minHeight: "100vh",
+        // @ts-expect-error — non-standard but required for older Safari
+        WebkitMinHeight: "-webkit-fill-available",
+      }}
     >
       <TargetCursor
         targetSelector=".cursor-target"
@@ -54,10 +61,15 @@ export default function App() {
         hideDefaultCursor={true}
       />
 
+      {/* Logo — offset by safe-area-inset-top so it clears the notch */}
       <a
         href="/"
-        className="fixed top-4 left-4 z-20 w-19 h-15 cursor-target flex items-center justify-center"
+        className="fixed z-20 cursor-target flex items-center justify-center"
         aria-label="Home logo"
+        style={{
+          top: "max(1rem, calc(env(safe-area-inset-top) + 0.5rem))",
+          left: "max(1rem, calc(env(safe-area-inset-left) + 0.5rem))",
+        }}
       >
         <svg
           viewBox="0 0 964.25709 743.22518"
@@ -66,8 +78,8 @@ export default function App() {
           aria-label="Logo"
           style={{
             filter: "brightness(1)",
-            width: "60px",
-            height: "60px",
+            width: isMobile ? "48px" : "60px",
+            height: isMobile ? "37px" : "46px",
           }}
         >
           <polygon
@@ -99,15 +111,23 @@ export default function App() {
       </div>
 
       <main className="relative z-10">
-
-
-        {/* Social Icons - Back to Original Position */}
+        {/* Social Icons
+            On mobile: horizontally centred, above the home-bar (safe-area-inset-bottom).
+            On desktop: vertically centred, horizontally centred. */}
         <div
           className={`fixed z-10 ${
             isMobile
-              ? "left-1/2 bottom-8 -translate-x-1/2"
+              ? "left-1/2 -translate-x-1/2"
               : "left-1/2 top-1/2 -translate-x-1/2 translate-y-1/2"
           }`}
+          style={
+            isMobile
+              ? {
+                  bottom:
+                    "max(2rem, calc(env(safe-area-inset-bottom) + 1.5rem))",
+                }
+              : undefined
+          }
         >
           <FadingIconsGroup
             icons={socialIcons}
@@ -121,7 +141,6 @@ export default function App() {
         </div>
       </main>
 
-      {/* Vercel Analytics component */}
       <Analytics />
     </div>
   );

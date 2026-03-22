@@ -1,5 +1,14 @@
 .darkveil-canvas {
+  /* Explicit block to kill any inline-block gap */
+  display: block;
+ 
+  /* Fill the fixed inset-0 parent on all platforms.
+     Width/height are also set explicitly in JS as a belt-and-suspenders
+     measure for iOS Safari where percentage heights inside fixed
+     containers can resolve to 0 before the first layout pass. */
   width: 100%;
   height: 100%;
-  display: block;
+ 
+  /* Prevent any accidental scrollbar from a subpixel overhang */
+  overflow: hidden;
 }

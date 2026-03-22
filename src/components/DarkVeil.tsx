@@ -94,6 +94,7 @@ export default function DarkVeil({
   resolutionScale = 1
 }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
+
   useEffect(() => {
     const canvas = ref.current as HTMLCanvasElement;
     const parent = canvas.parentElement as HTMLElement;
@@ -123,15 +124,27 @@ export default function DarkVeil({
     const mesh = new Mesh(gl, { geometry, program });
 
     const resize = () => {
-      const w = parent.clientWidth,
-        h = parent.clientHeight;
-      const scaledW = w * resolutionScale;
-      const scaledH = h * resolutionScale;
+      // On iOS Safari, fixed-position containers can report clientWidth/Height
+      // as 0 before paint. Fall back to window.inner* in that case.
+      const w = parent.clientWidth > 0 ? parent.clientWidth : window.innerWidth;
+      const h = parent.clientHeight > 0 ? parent.clientHeight : window.innerHeight;
+      const scaledW = Math.floor(w * resolutionScale);
+      const scaledH = Math.floor(h * resolutionScale);
       renderer.setSize(scaledW, scaledH);
+      // Decouple CSS display size from the render buffer size so that
+      // low-res rendering (resolutionScale < 1) still fills the screen.
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
       program.uniforms.uResolution.value.set(scaledW, scaledH);
     };
 
-    window.addEventListener('resize', resize);
+    // ResizeObserver fires on orientation change and address-bar collapse/expand,
+    // which window 'resize' misses on iOS Safari.
+    const ro = new ResizeObserver(() => resize());
+    ro.observe(parent);
+    // Also listen to orientationchange for older iOS that fires it separately
+    const onOrientationChange = () => setTimeout(resize, 100);
+    window.addEventListener('orientationchange', onOrientationChange);
     resize();
 
     const start = performance.now();
@@ -152,8 +165,10 @@ export default function DarkVeil({
 
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener('resize', resize);
+      ro.disconnect();
+      window.removeEventListener('orientationchange', onOrientationChange);
     };
   }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale]);
+
   return <canvas ref={ref} className="darkveil-canvas" />;
 }
